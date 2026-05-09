@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>{{ system_settings.school_name }} - Books</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+
+<body style="background:url('https://images.unsplash.com/photo-1524995997946-a1c2e315a42f') no-repeat center center fixed;background-size:cover;">
+
+<nav class="navbar navbar-dark px-4" style="background: {{ system_settings.theme_color }};">
+    <span class="navbar-brand fw-bold">
+        {{ system_settings.school_name }} - {{ system_settings.library_name }}
+    </span>
+
+    <a href="{% url 'logout' %}" class="btn btn-light btn-sm">
+        Logout
+    </a>
+</nav>
+
+<div class="container mt-4 bg-white p-4 rounded shadow">
+
+    <div class="d-flex justify-content-between align-items-center mb-3">
+
+        <div>
+            <h2 class="fw-bold">Books</h2>
+            <p class="text-muted">
+                Manage all registered library books.
+            </p>
+        </div>
+
+        <div>
+            <a href="{% url 'dashboard' %}" class="btn btn-secondary">
+                Dashboard
+            </a>
+
+            <a href="{% url 'borrow_records' %}" class="btn btn-dark">
+                Borrow Records
+            </a>
+
+            <a href="{% url 'add_book' %}" class="btn btn-success">
+                + Add Book
+            </a>
+        </div>
+
+    </div>
+
+    <form method="GET" class="row mb-3">
+
+        <div class="col-md-10">
+            <input
+                type="text"
+                name="q"
+                value="{{ query }}"
+                class="form-control"
+                placeholder="Search by title, author, ISBN, or category"
+            >
+        </div>
+
+        <div class="col-md-2">
+            <button class="btn btn-primary w-100">
+                Search
+            </button>
+        </div>
+
+    </form>
+
+    <table class="table table-bordered table-hover">
+
+        <thead class="table-primary">
+            <tr>
+                <th>Title</th>
+                <th>Author</th>
+                <th>Category</th>
+                <th>Total</th>
+                <th>Available</th>
+                <th>Status</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+
+        <tbody>
+
+            {% for book in books %}
+            <tr>
+
+                <td>{{ book.title }}</td>
+
+                <td>{{ book.author }}</td>
+
+                <td>{{ book.category|default:"-" }}</td>
+
+                <td>{{ book.total_copies }}</td>
+
+                <td>{{ book.available_copies }}</td>
+
+                <td>
+                    {% if book.available_copies > 0 %}
+                        <span class="badge bg-success">
+                            Available
+                        </span>
+                    {% else %}
+                        <span class="badge bg-danger">
+                            Unavailable
+                        </span>
+                    {% endif %}
+                </td>
+
+                <td>
+
+                    {% if book.available_copies > 0 %}
+                        <a href="{% url 'issue_book' book.id %}"
+                           class="btn btn-sm btn-success">
+                            Issue
+                        </a>
+                    {% endif %}
+
+                    <a href="{% url 'book_qr_print' book.id %}"
+                       class="btn btn-sm btn-info">
+                        QR
+                    </a>
+
+                    <a href="{% url 'edit_book' book.id %}"
+                       class="btn btn-sm btn-warning">
+                        Edit
+                    </a>
+
+                    <a href="{% url 'delete_book' book.id %}"
+                       class="btn btn-sm btn-danger"
+                       onclick="return confirm('Delete this book?');">
+                        Delete
+                    </a>
+
+                </td>
+
+            </tr>
+
+            {% empty %}
+
+            <tr>
+                <td colspan="7" class="text-center">
+                    No matching books found.
+                </td>
+            </tr>
+
+            {% endfor %}
+
+        </tbody>
+
+    </table>
+
+</div>
+
+</body>
+</html>

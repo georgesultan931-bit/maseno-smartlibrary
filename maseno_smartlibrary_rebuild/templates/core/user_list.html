@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>{{ system_settings.school_name }} - Users</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+
+<body style="background:url('https://images.unsplash.com/photo-1524995997946-a1c2e315a42f') no-repeat center center fixed;background-size:cover;">
+
+<nav class="navbar navbar-dark px-4" style="background: {{ system_settings.theme_color }};">
+    <span class="navbar-brand fw-bold">{{ system_settings.school_name }} - {{ system_settings.library_name }}</span>
+    <a href="{% url 'logout' %}" class="btn btn-light btn-sm">Logout</a>
+</nav>
+
+<div class="container mt-4 bg-white p-4 rounded shadow">
+
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <div>
+            <h2 class="fw-bold">System Users</h2>
+            <p class="text-muted">Manage students, staff, librarians, and admins.</p>
+        </div>
+
+        <div>
+            <a href="{% url 'dashboard' %}" class="btn btn-secondary">Dashboard</a>
+            <a href="{% url 'add_user' %}" class="btn btn-success">+ Add User</a>
+            <a href="{% url 'bulk_upload_students' %}" class="btn btn-info">Bulk Upload Students</a>
+        </div>
+    </div>
+
+    <form method="GET" class="row mb-3">
+        <div class="col-md-10">
+            <input type="text" name="q" value="{{ query }}" class="form-control"
+                   placeholder="Search by username, admission number, staff number, or phone">
+        </div>
+        <div class="col-md-2">
+            <button class="btn btn-primary w-100">Search</button>
+        </div>
+    </form>
+
+    <table class="table table-bordered table-hover">
+        <thead class="table-primary">
+            <tr>
+                <th>Username</th>
+                <th>Role</th>
+                <th>Admission No</th>
+                <th>Staff No</th>
+                <th>Phone</th>
+                <th>Status</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+
+        <tbody>
+            {% for profile in profiles %}
+            <tr>
+                <td>{{ profile.user.username }}</td>
+                <td>{{ profile.role|title }}</td>
+                <td>{{ profile.admission_number|default:"-" }}</td>
+                <td>{{ profile.staff_number|default:"-" }}</td>
+                <td>{{ profile.phone|default:"-" }}</td>
+                <td>
+                    {% if profile.user.is_active %}
+                        <span class="badge bg-success">Active</span>
+                    {% else %}
+                        <span class="badge bg-danger">Inactive</span>
+                    {% endif %}
+                </td>
+                <td>
+                    <a href="{% url 'edit_user' profile.id %}" class="btn btn-sm btn-warning">Edit</a>
+
+                    {% if profile.user != request.user %}
+                    <a href="{% url 'delete_user' profile.id %}" class="btn btn-sm btn-danger"
+                       onclick="return confirm('Delete this user?');">
+                        Delete
+                    </a>
+                    {% endif %}
+                </td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="7" class="text-center">No matching users found.</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+</div>
+
+</body>
+</html>

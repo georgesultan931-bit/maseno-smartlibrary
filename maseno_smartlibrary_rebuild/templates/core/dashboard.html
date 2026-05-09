@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>{{ system_settings.school_name }} - Dashboard</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <style>
+        body {
+            background: url('https://images.unsplash.com/photo-1524995997946-a1c2e315a42f') no-repeat center center fixed;
+            background-size: cover;
+        }
+
+        .glass-box {
+            background: rgba(255,255,255,.92);
+            backdrop-filter: blur(6px);
+        }
+
+        .stat-card {
+            position: relative;
+            overflow: hidden;
+            min-height: 145px;
+            border: none;
+            border-radius: 18px;
+        }
+
+        .flower {
+            position: absolute;
+            font-size: 45px;
+            opacity: .28;
+            animation: flowerMove 5s infinite ease-in-out;
+        }
+
+        .flower.one {
+            top: 10px;
+            right: 18px;
+        }
+
+        .flower.two {
+            bottom: 10px;
+            left: 18px;
+            animation-delay: 1.5s;
+        }
+
+        @keyframes flowerMove {
+            0% {
+                transform: translateY(0) rotateY(0deg) rotate(0deg);
+            }
+            50% {
+                transform: translateY(-12px) rotateY(180deg) rotate(12deg);
+            }
+            100% {
+                transform: translateY(0) rotateY(360deg) rotate(0deg);
+            }
+        }
+
+        .stat-content {
+            position: relative;
+            z-index: 2;
+        }
+
+        .chart-card {
+            background: #ffffff;
+            border-radius: 18px;
+            padding: 20px;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.08);
+        }
+    </style>
+</head>
+
+<body>
+
+<nav class="navbar navbar-dark px-4" style="background: {{ system_settings.theme_color }};">
+    <span class="navbar-brand fw-bold">
+        {{ system_settings.school_name }} - {{ system_settings.library_name }}
+    </span>
+    <a href="{% url 'logout' %}" class="btn btn-light btn-sm">Logout</a>
+</nav>
+
+<div class="container mt-4 p-4 rounded shadow glass-box">
+
+    <h2 class="fw-bold">Dashboard</h2>
+    <p class="text-muted">Welcome, {{ request.user.username }} | Role: {{ role|title }}</p>
+
+    <div class="row mt-4">
+
+        <div class="col-md-3 mb-3">
+            <div class="card stat-card text-white shadow-lg p-3" style="background: linear-gradient(135deg, #6a11cb, #2575fc);">
+                <span class="flower one">🌸</span>
+                <span class="flower two">🌺</span>
+                <div class="stat-content">
+                    <h6>Total Books</h6>
+                    <h2>{{ total_books }}</h2>
+                    <small>Library inventory</small>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-3 mb-3">
+            <div class="card stat-card text-white shadow-lg p-3" style="background: linear-gradient(135deg, #11998e, #38ef7d);">
+                <span class="flower one">🌼</span>
+                <span class="flower two">🌿</span>
+                <div class="stat-content">
+                    <h6>Users</h6>
+                    <h2>{{ total_users }}</h2>
+                    <small>Registered accounts</small>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-3 mb-3">
+            <div class="card stat-card text-white shadow-lg p-3" style="background: linear-gradient(135deg, #f7971e, #ffd200);">
+                <span class="flower one">🌻</span>
+                <span class="flower two">🌼</span>
+                <div class="stat-content">
+                    <h6>Borrowed</h6>
+                    <h2>{{ borrowed }}</h2>
+                    <small>Books currently out</small>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-3 mb-3">
+            <div class="card stat-card text-white shadow-lg p-3" style="background: linear-gradient(135deg, #ff416c, #ff4b2b);">
+                <span class="flower one">🌹</span>
+                <span class="flower two">🌷</span>
+                <div class="stat-content">
+                    <h6>Overdue</h6>
+                    <h2>{{ overdue }}</h2>
+                    <small>Needs attention</small>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <div class="row mt-4">
+
+        <div class="col-md-4 mb-3">
+            <div class="card stat-card text-white shadow-lg p-3" style="background: linear-gradient(135deg, #141e30, #243b55);">
+                <div class="stat-content">
+                    <h6>Returned Books</h6>
+                    <h2>{{ returned_count }}</h2>
+                    <small>Completed borrowing cycles</small>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4 mb-3">
+            <div class="card stat-card text-white shadow-lg p-3" style="background: linear-gradient(135deg, #8e2de2, #4a00e0);">
+                <div class="stat-content">
+                    <h6>Unpaid Fines</h6>
+                    <h2>{{ unpaid_fines }}</h2>
+                    <small>Pending payments</small>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4 mb-3">
+            <div class="card stat-card text-white shadow-lg p-3" style="background: linear-gradient(135deg, #00b09b, #96c93d);">
+                <div class="stat-content">
+                    <h6>Total Fine Amount</h6>
+                    <h2>KES {{ total_fines_amount }}</h2>
+                    <small>Recorded penalties</small>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <div class="row mt-4">
+
+        <div class="col-md-6 mb-3">
+            <div class="chart-card">
+                <h5 class="fw-bold">Borrowing Status</h5>
+                <p class="text-muted small">Active vs returned borrowing records.</p>
+                <canvas id="borrowChart"></canvas>
+            </div>
+        </div>
+
+        <div class="col-md-6 mb-3">
+            <div class="chart-card">
+                <h5 class="fw-bold">Fine Status</h5>
+                <p class="text-muted small">Paid vs unpaid fines.</p>
+                <canvas id="fineChart"></canvas>
+            </div>
+        </div>
+
+        <div class="col-md-12 mb-3">
+            <div class="chart-card">
+                <h5 class="fw-bold">Books by Category</h5>
+                <p class="text-muted small">Library collection distribution.</p>
+                <canvas id="categoryChart"></canvas>
+            </div>
+        </div>
+
+    </div>
+
+    <div class="mt-4 d-flex gap-2 flex-wrap">
+        {% if role == "admin" or role == "librarian" %}
+            <a href="{% url 'book_list' %}" class="btn btn-primary">Manage Books</a>
+            <a href="{% url 'borrow_records' %}" class="btn btn-dark">Borrow Records</a>
+            <a href="{% url 'reset_student_password' %}" class="btn btn-warning">Reset Student Password</a>
+        {% endif %}
+
+        {% if role == "admin" %}
+            <a href="{% url 'user_list' %}" class="btn btn-success">Users</a>
+            <a href="{% url 'bulk_upload_students' %}" class="btn btn-info">Bulk Upload Students</a>
+            <a href="/admin/" class="btn btn-secondary">Admin Panel</a>
+        {% endif %}
+    </div>
+
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<script>
+    const borrowChart = new Chart(document.getElementById('borrowChart'), {
+        type: 'doughnut',
+        data: {
+            labels: ['Active Borrowed', 'Returned'],
+            datasets: [{
+                data: [{{ active_count }}, {{ returned_count }}],
+                backgroundColor: ['#f7971e', '#11998e']
+            }]
+        }
+    });
+
+    const fineChart = new Chart(document.getElementById('fineChart'), {
+        type: 'pie',
+        data: {
+            labels: ['Paid Fines', 'Unpaid Fines'],
+            datasets: [{
+                data: [{{ paid_fines }}, {{ unpaid_fines }}],
+                backgroundColor: ['#38ef7d', '#ff416c']
+            }]
+        }
+    });
+
+    const categoryChart = new Chart(document.getElementById('categoryChart'), {
+        type: 'bar',
+        data: {
+            labels: {{ category_labels|safe }},
+            datasets: [{
+                label: 'Books',
+                data: {{ category_data|safe }},
+                backgroundColor: '#2575fc'
+            }]
+        },
+        options: {
+            scales: {
+                y: {
+                    beginAtZero: true
+                }
+            }
+        }
+    });
+</script>
+
+</body>
+</html>
