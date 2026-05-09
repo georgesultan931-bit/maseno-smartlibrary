@@ -1,3 +1,5 @@
+{% load static %}
+
 <!DOCTYPE html>
 <html>
 <head>
@@ -9,7 +11,8 @@
 
     <style>
         body {
-            background: linear-gradient(rgba(0,0,0,.65), rgba(0,0,0,.65)),
+            background:
+            linear-gradient(rgba(0,0,0,.65), rgba(0,0,0,.65)),
             url('https://images.unsplash.com/photo-1524995997946-a1c2e315a42f')
             no-repeat center center fixed;
 
@@ -31,11 +34,11 @@
         }
 
         .logo-img {
-            width: 110px;
-            height: 110px;
-            object-fit: cover;
-            border-radius: 50%;
-            padding: 5px;
+            width: 120px;
+            height: 120px;
+            object-fit: contain;
+            border-radius: 20px;
+            padding: 8px;
             box-shadow: 0 6px 18px rgba(0,0,0,.3);
         }
 
@@ -97,9 +100,11 @@
 
     <div class="glass-card text-center">
 
-        {% if system_settings.logo %}
-            <img src="{{ system_settings.logo.url }}" class="logo-img mb-4" alt="School Logo">
-        {% endif %}
+        <img
+            src="{% static 'img/maseno-logo.png' %}"
+            class="logo-img mb-4"
+            alt="Maseno University Logo"
+        >
 
         <h1 class="hero-title">
             {{ system_settings.school_name }}
