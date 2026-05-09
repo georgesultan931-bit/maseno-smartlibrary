@@ -2,6 +2,8 @@
 <html>
 <head>
     <title>{{ system_settings.school_name }} - Dashboard</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
 
     <style>
@@ -21,6 +23,11 @@
             min-height: 145px;
             border: none;
             border-radius: 18px;
+            transition: transform .3s ease;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-4px);
         }
 
         .flower {
@@ -30,27 +37,13 @@
             animation: flowerMove 5s infinite ease-in-out;
         }
 
-        .flower.one {
-            top: 10px;
-            right: 18px;
-        }
-
-        .flower.two {
-            bottom: 10px;
-            left: 18px;
-            animation-delay: 1.5s;
-        }
+        .flower.one { top: 10px; right: 18px; }
+        .flower.two { bottom: 10px; left: 18px; animation-delay: 1.5s; }
 
         @keyframes flowerMove {
-            0% {
-                transform: translateY(0) rotateY(0deg) rotate(0deg);
-            }
-            50% {
-                transform: translateY(-12px) rotateY(180deg) rotate(12deg);
-            }
-            100% {
-                transform: translateY(0) rotateY(360deg) rotate(0deg);
-            }
+            0% { transform: translateY(0) rotateY(0deg) rotate(0deg); }
+            50% { transform: translateY(-12px) rotateY(180deg) rotate(12deg); }
+            100% { transform: translateY(0) rotateY(360deg) rotate(0deg); }
         }
 
         .stat-content {
@@ -63,6 +56,58 @@
             border-radius: 18px;
             padding: 20px;
             box-shadow: 0 8px 25px rgba(0,0,0,0.08);
+        }
+
+        canvas {
+            max-width: 100%;
+        }
+
+        .action-buttons a {
+            margin-bottom: 10px;
+        }
+
+        @media (max-width: 768px) {
+            .navbar {
+                padding: 12px !important;
+            }
+
+            .navbar-brand {
+                font-size: 15px;
+                line-height: 1.4;
+            }
+
+            .glass-box {
+                padding: 18px !important;
+            }
+
+            h2 {
+                font-size: 24px;
+            }
+
+            .stat-card {
+                min-height: 120px;
+            }
+
+            .stat-card h2 {
+                font-size: 24px;
+            }
+
+            .flower {
+                font-size: 30px;
+            }
+
+            .chart-card {
+                padding: 15px;
+            }
+
+            .action-buttons {
+                display: flex;
+                flex-direction: column;
+            }
+
+            .action-buttons a {
+                width: 100%;
+            }
         }
     </style>
 </head>
@@ -83,7 +128,7 @@
 
     <div class="row mt-4">
 
-        <div class="col-md-3 mb-3">
+        <div class="col-12 col-sm-6 col-lg-3 mb-3">
             <div class="card stat-card text-white shadow-lg p-3" style="background: linear-gradient(135deg, #6a11cb, #2575fc);">
                 <span class="flower one">🌸</span>
                 <span class="flower two">🌺</span>
@@ -95,7 +140,7 @@
             </div>
         </div>
 
-        <div class="col-md-3 mb-3">
+        <div class="col-12 col-sm-6 col-lg-3 mb-3">
             <div class="card stat-card text-white shadow-lg p-3" style="background: linear-gradient(135deg, #11998e, #38ef7d);">
                 <span class="flower one">🌼</span>
                 <span class="flower two">🌿</span>
@@ -107,7 +152,7 @@
             </div>
         </div>
 
-        <div class="col-md-3 mb-3">
+        <div class="col-12 col-sm-6 col-lg-3 mb-3">
             <div class="card stat-card text-white shadow-lg p-3" style="background: linear-gradient(135deg, #f7971e, #ffd200);">
                 <span class="flower one">🌻</span>
                 <span class="flower two">🌼</span>
@@ -119,7 +164,7 @@
             </div>
         </div>
 
-        <div class="col-md-3 mb-3">
+        <div class="col-12 col-sm-6 col-lg-3 mb-3">
             <div class="card stat-card text-white shadow-lg p-3" style="background: linear-gradient(135deg, #ff416c, #ff4b2b);">
                 <span class="flower one">🌹</span>
                 <span class="flower two">🌷</span>
@@ -135,7 +180,7 @@
 
     <div class="row mt-4">
 
-        <div class="col-md-4 mb-3">
+        <div class="col-12 col-md-4 mb-3">
             <div class="card stat-card text-white shadow-lg p-3" style="background: linear-gradient(135deg, #141e30, #243b55);">
                 <div class="stat-content">
                     <h6>Returned Books</h6>
@@ -145,7 +190,7 @@
             </div>
         </div>
 
-        <div class="col-md-4 mb-3">
+        <div class="col-12 col-md-4 mb-3">
             <div class="card stat-card text-white shadow-lg p-3" style="background: linear-gradient(135deg, #8e2de2, #4a00e0);">
                 <div class="stat-content">
                     <h6>Unpaid Fines</h6>
@@ -155,7 +200,7 @@
             </div>
         </div>
 
-        <div class="col-md-4 mb-3">
+        <div class="col-12 col-md-4 mb-3">
             <div class="card stat-card text-white shadow-lg p-3" style="background: linear-gradient(135deg, #00b09b, #96c93d);">
                 <div class="stat-content">
                     <h6>Total Fine Amount</h6>
@@ -169,7 +214,7 @@
 
     <div class="row mt-4">
 
-        <div class="col-md-6 mb-3">
+        <div class="col-12 col-lg-6 mb-3">
             <div class="chart-card">
                 <h5 class="fw-bold">Borrowing Status</h5>
                 <p class="text-muted small">Active vs returned borrowing records.</p>
@@ -177,7 +222,7 @@
             </div>
         </div>
 
-        <div class="col-md-6 mb-3">
+        <div class="col-12 col-lg-6 mb-3">
             <div class="chart-card">
                 <h5 class="fw-bold">Fine Status</h5>
                 <p class="text-muted small">Paid vs unpaid fines.</p>
@@ -185,7 +230,7 @@
             </div>
         </div>
 
-        <div class="col-md-12 mb-3">
+        <div class="col-12 mb-3">
             <div class="chart-card">
                 <h5 class="fw-bold">Books by Category</h5>
                 <p class="text-muted small">Library collection distribution.</p>
@@ -195,7 +240,7 @@
 
     </div>
 
-    <div class="mt-4 d-flex gap-2 flex-wrap">
+    <div class="mt-4 d-flex gap-2 flex-wrap action-buttons">
         {% if role == "admin" or role == "librarian" %}
             <a href="{% url 'book_list' %}" class="btn btn-primary">Manage Books</a>
             <a href="{% url 'borrow_records' %}" class="btn btn-dark">Borrow Records</a>
@@ -247,6 +292,7 @@
             }]
         },
         options: {
+            responsive: true,
             scales: {
                 y: {
                     beginAtZero: true

@@ -2,11 +2,91 @@
 <html>
 <head>
     <title>{{ system_settings.school_name }} - Books</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
 
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <style>
+        body {
+            background: url('https://images.unsplash.com/photo-1524995997946-a1c2e315a42f') no-repeat center center fixed;
+            background-size: cover;
+        }
+
+        .page-card {
+            background: rgba(255,255,255,.95);
+            border-radius: 18px;
+        }
+
+        .top-actions a {
+            margin-bottom: 8px;
+        }
+
+        .action-btns a {
+            margin-bottom: 6px;
+        }
+
+        .table-responsive {
+            border-radius: 12px;
+            overflow-x: auto;
+        }
+
+        @media (max-width: 768px) {
+            .navbar {
+                padding: 12px !important;
+            }
+
+            .navbar-brand {
+                font-size: 15px;
+                line-height: 1.4;
+            }
+
+            .page-card {
+                padding: 18px !important;
+            }
+
+            .header-row {
+                flex-direction: column;
+                align-items: flex-start !important;
+                gap: 12px;
+            }
+
+            .top-actions {
+                display: flex;
+                flex-direction: column;
+                width: 100%;
+            }
+
+            .top-actions a {
+                width: 100%;
+            }
+
+            .search-btn {
+                margin-top: 8px;
+            }
+
+            h2 {
+                font-size: 24px;
+            }
+
+            table {
+                font-size: 14px;
+                white-space: nowrap;
+            }
+
+            .action-btns {
+                display: flex;
+                flex-direction: column;
+                gap: 4px;
+            }
+
+            .action-btns a {
+                width: 100%;
+            }
+        }
+    </style>
 </head>
 
-<body style="background:url('https://images.unsplash.com/photo-1524995997946-a1c2e315a42f') no-repeat center center fixed;background-size:cover;">
+<body>
 
 <nav class="navbar navbar-dark px-4" style="background: {{ system_settings.theme_color }};">
     <span class="navbar-brand fw-bold">
@@ -18,18 +98,18 @@
     </a>
 </nav>
 
-<div class="container mt-4 bg-white p-4 rounded shadow">
+<div class="container mt-4 p-4 shadow page-card">
 
-    <div class="d-flex justify-content-between align-items-center mb-3">
+    <div class="d-flex justify-content-between align-items-center mb-3 header-row">
 
         <div>
             <h2 class="fw-bold">Books</h2>
-            <p class="text-muted">
+            <p class="text-muted mb-0">
                 Manage all registered library books.
             </p>
         </div>
 
-        <div>
+        <div class="top-actions">
             <a href="{% url 'dashboard' %}" class="btn btn-secondary">
                 Dashboard
             </a>
@@ -47,7 +127,7 @@
 
     <form method="GET" class="row mb-3">
 
-        <div class="col-md-10">
+        <div class="col-12 col-md-10">
             <input
                 type="text"
                 name="q"
@@ -57,7 +137,7 @@
             >
         </div>
 
-        <div class="col-md-2">
+        <div class="col-12 col-md-2 search-btn">
             <button class="btn btn-primary w-100">
                 Search
             </button>
@@ -65,89 +145,80 @@
 
     </form>
 
-    <table class="table table-bordered table-hover">
+    <div class="table-responsive">
+        <table class="table table-bordered table-hover align-middle">
 
-        <thead class="table-primary">
-            <tr>
-                <th>Title</th>
-                <th>Author</th>
-                <th>Category</th>
-                <th>Total</th>
-                <th>Available</th>
-                <th>Status</th>
-                <th>Actions</th>
-            </tr>
-        </thead>
+            <thead class="table-primary">
+                <tr>
+                    <th>Title</th>
+                    <th>Author</th>
+                    <th>Category</th>
+                    <th>Total</th>
+                    <th>Available</th>
+                    <th>Status</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
 
-        <tbody>
+            <tbody>
 
-            {% for book in books %}
-            <tr>
+                {% for book in books %}
+                <tr>
 
-                <td>{{ book.title }}</td>
+                    <td>{{ book.title }}</td>
+                    <td>{{ book.author }}</td>
+                    <td>{{ book.category|default:"-" }}</td>
+                    <td>{{ book.total_copies }}</td>
+                    <td>{{ book.available_copies }}</td>
 
-                <td>{{ book.author }}</td>
+                    <td>
+                        {% if book.available_copies > 0 %}
+                            <span class="badge bg-success">Available</span>
+                        {% else %}
+                            <span class="badge bg-danger">Unavailable</span>
+                        {% endif %}
+                    </td>
 
-                <td>{{ book.category|default:"-" }}</td>
+                    <td>
+                        <div class="action-btns">
+                            {% if book.available_copies > 0 %}
+                                <a href="{% url 'issue_book' book.id %}" class="btn btn-sm btn-success">
+                                    Issue
+                                </a>
+                            {% endif %}
 
-                <td>{{ book.total_copies }}</td>
+                            <a href="{% url 'book_qr_print' book.id %}" class="btn btn-sm btn-info">
+                                QR
+                            </a>
 
-                <td>{{ book.available_copies }}</td>
+                            <a href="{% url 'edit_book' book.id %}" class="btn btn-sm btn-warning">
+                                Edit
+                            </a>
 
-                <td>
-                    {% if book.available_copies > 0 %}
-                        <span class="badge bg-success">
-                            Available
-                        </span>
-                    {% else %}
-                        <span class="badge bg-danger">
-                            Unavailable
-                        </span>
-                    {% endif %}
-                </td>
+                            <a href="{% url 'delete_book' book.id %}"
+                               class="btn btn-sm btn-danger"
+                               onclick="return confirm('Delete this book?');">
+                                Delete
+                            </a>
+                        </div>
+                    </td>
 
-                <td>
+                </tr>
 
-                    {% if book.available_copies > 0 %}
-                        <a href="{% url 'issue_book' book.id %}"
-                           class="btn btn-sm btn-success">
-                            Issue
-                        </a>
-                    {% endif %}
+                {% empty %}
 
-                    <a href="{% url 'book_qr_print' book.id %}"
-                       class="btn btn-sm btn-info">
-                        QR
-                    </a>
+                <tr>
+                    <td colspan="7" class="text-center">
+                        No matching books found.
+                    </td>
+                </tr>
 
-                    <a href="{% url 'edit_book' book.id %}"
-                       class="btn btn-sm btn-warning">
-                        Edit
-                    </a>
+                {% endfor %}
 
-                    <a href="{% url 'delete_book' book.id %}"
-                       class="btn btn-sm btn-danger"
-                       onclick="return confirm('Delete this book?');">
-                        Delete
-                    </a>
+            </tbody>
 
-                </td>
-
-            </tr>
-
-            {% empty %}
-
-            <tr>
-                <td colspan="7" class="text-center">
-                    No matching books found.
-                </td>
-            </tr>
-
-            {% endfor %}
-
-        </tbody>
-
-    </table>
+        </table>
+    </div>
 
 </div>
 
