@@ -12,6 +12,15 @@
             background-size: cover;
         }
 
+        .logo-img {
+            width: 42px;
+            height: 42px;
+            object-fit: cover;
+            border-radius: 50%;
+            background: white;
+            padding: 3px;
+        }
+
         .glass-box {
             background: rgba(255,255,255,.92);
             backdrop-filter: blur(6px);
@@ -72,8 +81,13 @@
             }
 
             .navbar-brand {
-                font-size: 15px;
+                font-size: 14px;
                 line-height: 1.4;
+            }
+
+            .logo-img {
+                width: 36px;
+                height: 36px;
             }
 
             .glass-box {
@@ -115,16 +129,31 @@
 <body>
 
 <nav class="navbar navbar-dark px-4" style="background: {{ system_settings.theme_color }};">
-    <span class="navbar-brand fw-bold">
-        {{ system_settings.school_name }} - {{ system_settings.library_name }}
-    </span>
+    <div class="d-flex align-items-center gap-2">
+        {% if system_settings.logo %}
+            <img src="{{ system_settings.logo.url }}" class="logo-img" alt="School Logo">
+        {% endif %}
+
+        <span class="navbar-brand fw-bold mb-0">
+            {{ system_settings.school_name }} - {{ system_settings.library_name }}
+        </span>
+    </div>
+
     <a href="{% url 'logout' %}" class="btn btn-light btn-sm">Logout</a>
 </nav>
 
 <div class="container mt-4 p-4 rounded shadow glass-box">
 
-    <h2 class="fw-bold">Dashboard</h2>
-    <p class="text-muted">Welcome, {{ request.user.username }} | Role: {{ role|title }}</p>
+    <div class="d-flex align-items-center gap-3 mb-3">
+        {% if system_settings.logo %}
+            <img src="{{ system_settings.logo.url }}" class="logo-img" alt="School Logo">
+        {% endif %}
+
+        <div>
+            <h2 class="fw-bold mb-0">Dashboard</h2>
+            <p class="text-muted mb-0">Welcome, {{ request.user.username }} | Role: {{ role|title }}</p>
+        </div>
+    </div>
 
     <div class="row mt-4">
 
